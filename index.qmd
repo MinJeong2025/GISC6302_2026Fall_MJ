@@ -1,0 +1,5 @@
+---
+title: "GISC 6302 Course Assignments"
+subtitle: "Fall 2026"
+author: "Min Jeong"
+---
