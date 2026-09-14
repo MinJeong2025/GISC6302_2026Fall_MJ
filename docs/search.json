@@ -1,0 +1,93 @@
+[
+  {
+    "objectID": "assign02.html",
+    "href": "assign02.html",
+    "title": "Assignment 2",
+    "section": "",
+    "text": "Geography: World Wide\nTime window: Past year (09.14.2025- 09.13.2026)\nCategory: All categories\nSearch type: Web Search\nDate and time pulled: 2026-09-1"
+  },
+  {
+    "objectID": "assign02.html#a.-what-range-of-dates-does-the-file-cover",
+    "href": "assign02.html#a.-what-range-of-dates-does-the-file-cover",
+    "title": "Assignment 2",
+    "section": "2. a. What range of dates does the file cover?",
+    "text": "2. a. What range of dates does the file cover?\n\nrange(trend_web$Time)\n\n[1] \"2025-09-14\" \"2026-09-13\""
+  },
+  {
+    "objectID": "assign02.html#b.-what-is-the-interval-hourlydailyweeklymonthly",
+    "href": "assign02.html#b.-what-is-the-interval-hourlydailyweeklymonthly",
+    "title": "Assignment 2",
+    "section": "2. b. What is the interval —hourly,daily,weekly,monthly?",
+    "text": "2. b. What is the interval —hourly,daily,weekly,monthly?\nWeekly\n\nNow change the date window and download again. Did the interval change?\n\ntrend_past5 &lt;- read.csv(\"Lab2/Google_Trend_past5.csv\")\n\nhead(trend_past5)\n\n        Time Donald.Trump Kamala.Harris Election\n1 2021-09-01            4             0        6\n2 2021-10-01            4             0        3\n3 2021-11-01            4             1        6\n4 2021-12-01            4             0        3\n5 2022-01-01            3             0        3\n6 2022-02-01            1             0        5\n\n\nYes. It chagned to Monthly from Weekly."
+  },
+  {
+    "objectID": "assign02.html#c.-what-are-the-units-what-does-a-value-of-100-mean-and-0",
+    "href": "assign02.html#c.-what-are-the-units-what-does-a-value-of-100-mean-and-0",
+    "title": "Assignment 2",
+    "section": "2. c. What are the units? What does a value of 100 mean, and 0?",
+    "text": "2. c. What are the units? What does a value of 100 mean, and 0?\n\nrange(trend_web$Donald.Trump)\n\n[1] 29 93\n\nrange(trend_web$Kamala.Harris)\n\n[1] 0 2\n\nrange(trend_web$Election)\n\n[1]   8 100\n\n\nThe units are normalized relative search interest on a scale from 0 to 100. A value of 100 represents the peak search interest within the query, while 0 indicates very low or insufficient search volume rather than zero searches."
+  },
+  {
+    "objectID": "assign02.html#d.-now-remove-one-search-term-and-download-again.-did-the-numbers-for-the-remaining-terms-stay-the-same",
+    "href": "assign02.html#d.-now-remove-one-search-term-and-download-again.-did-the-numbers-for-the-remaining-terms-stay-the-same",
+    "title": "Assignment 2",
+    "section": "2. d. Now remove one search term and download again. Did the numbers for the remaining terms stay the same?",
+    "text": "2. d. Now remove one search term and download again. Did the numbers for the remaining terms stay the same?\n\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\ntrend_2 &lt;- read.csv(\"Lab2/Google_Trend_2.csv\")\n\nrange(trend_2$Donald.Trump)\n\n[1] 29 93\n\nrange(trend_2$Election)\n\n[1]   8 100\n\ndiff_T&lt;- left_join(trend_web[,c(1,2)], trend_2[,c(1,2)], by='Time')\ndiff_T&lt;- diff_T %&gt;% filter(diff_T$Donald.Trump.x != diff_T$Donald.Trump.y)\nprint(diff_T)\n\n        Time Donald.Trump.x Donald.Trump.y\n1 2026-09-13             30             32\n\ndiff_E&lt;- left_join(trend_web[,c(1,4)], trend_2[,c(1,3)], by='Time')\ndiff_E&lt;-diff_E %&gt;% filter(diff_E$Election.x != diff_E$Election.y)\nprint(diff_E)\n\n[1] Time       Election.x Election.y\n&lt;0 rows&gt; (or 0-length row.names)\n\n\nNo. Most values remained the same, but the most recent Donald Trump observation changed from 30 to 32. This likely reflects Google Trends’ sampling and updating process, especially for the most recent period. The Election values remained unchanged."
+  },
+  {
+    "objectID": "assign02.html#a.-use-the-gtrendsr-package-and-the-gtrendsr01.r-program.-the-first-call-in-that-script-is-the",
+    "href": "assign02.html#a.-use-the-gtrendsr-package-and-the-gtrendsr01.r-program.-the-first-call-in-that-script-is-the",
+    "title": "Assignment 2",
+    "section": "3. a. Use the gtrendsR package and the gtrendsR01.R program. The first call in that script is the",
+    "text": "3. a. Use the gtrendsR package and the gtrendsR01.R program. The first call in that script is the\nsame query you just ran by hand.\n\nlibrary(gtrendsR)\n\nWarning: package 'gtrendsR' was built under R version 4.5.3\n\nlibrary(ggplot2)\n\nthe_df &lt;- read_csv(\"Lab2/gtrends_us_5y_2026-09-13.csv\")\n\nRows: 786 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (5): hits, keyword, geo, time, gprop\ndbl  (1): category\ndttm (1): date\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nggplot(the_df, aes(x = date, y = hits, color = keyword)) +\n  geom_line()"
+  },
+  {
+    "objectID": "assign02.html#b.-work-through-the-rest-of-the-script-one-term-over-its-full-history-time-all-the-same",
+    "href": "assign02.html#b.-work-through-the-rest-of-the-script-one-term-over-its-full-history-time-all-the-same",
+    "title": "Assignment 2",
+    "section": "3. b. Work through the rest of the script: one term over its full history (time = \"all\"), the same",
+    "text": "3. b. Work through the rest of the script: one term over its full history (time = \"all\"), the same\nterm in another country, one term across c(\"US\", \"GB\", \"TW\"), and three terms worldwide.\n\n# One term over its full history\nfull&lt;- readRDS('Lab2/full.rds')\nplot(full)\n\n\n\n\n\n\n\n# Same term in another country\noc&lt;- readRDS('Lab2/oc.rds')\nplot(oc)\n\n\n\n\n\n\n\n# One term across US, GB, TW\ntc&lt;- readRDS('Lab2/tc.rds')\nplot(tc)\n\n\n\n\n\n\n\n# Three terms worldwide\ntct &lt;- readRDS('Lab2/tct.rds')\nplot(tct)"
+  },
+  {
+    "objectID": "assign02.html#c.-section-6-of-the-script-runs-namestct.-that-call-left-onlyinterest-at-its-default-so-the",
+    "href": "assign02.html#c.-section-6-of-the-script-runs-namestct.-that-call-left-onlyinterest-at-its-default-so-the",
+    "title": "Assignment 2",
+    "section": "3. c. Section 6 of the script runs names(tct). That call left onlyInterest at its default, so the",
+    "text": "3. c. Section 6 of the script runs names(tct). That call left onlyInterest at its default, so the\nobject carries several data frames. Which of them did the website CSV not give you?\n\nnames(tct)\n\n[1] \"interest_over_time\"  \"interest_by_country\" \"interest_by_region\" \n[4] \"interest_by_dma\"     \"interest_by_city\"    \"related_topics\"     \n[7] \"related_queries\"    \n\n\nThe website CSV only provided the interest-over-time series. The gtrendsR object also included geographic breakdowns (interest_by_country, interest_by_region, interest_by_dma, and interest_by_city) as well as related_topics and related_queries, which were not included in the downloaded website CSV."
+  },
+  {
+    "objectID": "assign02.html#a.-pull-both-and-compare-the-series.-are-they-the-same",
+    "href": "assign02.html#a.-pull-both-and-compare-the-series.-are-they-the-same",
+    "title": "Assignment 2",
+    "section": "a. Pull both and compare the series. Are they the same?",
+    "text": "a. Pull both and compare the series. Are they the same?\n\nterms &lt;- readRDS(\"Lab2/terms.rds\")\nplot(terms)\n\n\n\n\n\n\n\nterm_df&lt;- as.data.frame(terms)\nterm_df %&gt;%\n  mutate(hits_num = parse_number(interest_over_time.hits)) %&gt;%\n  group_by(interest_over_time.keyword) %&gt;%\n  summarise(\n    mean_interest = mean(hits_num, na.rm = TRUE),\n    max_interest = max(hits_num, na.rm = TRUE),\n    min_interest = min(hits_num, na.rm = TRUE))\n\n# A tibble: 2 × 4\n  interest_over_time.keyword mean_interest max_interest min_interest\n  &lt;chr&gt;                              &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;\n1 Harris                              9.22          100            6\n2 Kamala Harris                       2.27           65            1\n\n\nThe two series are not the same. The average interest for “Harris” was 9.22, compared with 2.27 for “Kamala Harris.” The “Harris” series also reached a maximum of 100, while “Kamala Harris” reached 65. This shows that the broader term “Harris” captures substantially more search activity."
+  },
+  {
+    "objectID": "assign02.html#b.-harris-is-also-a-county-a-supermarket-chain-and-several-thousand-other-people.-what-does-that-gap-tell-you-about-the-difference-between-a-search-term-and-the-concept-you-meant-to-measure",
+    "href": "assign02.html#b.-harris-is-also-a-county-a-supermarket-chain-and-several-thousand-other-people.-what-does-that-gap-tell-you-about-the-difference-between-a-search-term-and-the-concept-you-meant-to-measure",
+    "title": "Assignment 2",
+    "section": "b. Harris is also a county, a supermarket chain, and several thousand other people. What does that gap tell you about the difference between a search term and the concept you meant to measure?",
+    "text": "b. Harris is also a county, a supermarket chain, and several thousand other people. What does that gap tell you about the difference between a search term and the concept you meant to measure?\nThis gap shows that a search term is not always equivalent to the concept a researcher intends to measure. “Harris” can refer to many different people, places, and organizations, so searches for “Harris” may include substantial unrelated activity. Using such a broad term can therefore introduce measurement error and weaken construct validity."
+  },
+  {
+    "objectID": "assign02.html#a.-line-the-two-series-up.-are-the-numbers-identical-if-not-by-how-much-and-in-which-direction",
+    "href": "assign02.html#a.-line-the-two-series-up.-are-the-numbers-identical-if-not-by-how-much-and-in-which-direction",
+    "title": "Assignment 2",
+    "section": "4. a. Line the two series up. Are the numbers identical? If not, by how much, and in which direction?",
+    "text": "4. a. Line the two series up. Are the numbers identical? If not, by how much, and in which direction?\n\nlibrary(tidyr)\n\nnames(trend_web)\n\n[1] \"Time\"          \"Donald.Trump\"  \"Kamala.Harris\" \"Election\"     \n\nnames(the_df)\n\n[1] \"date\"     \"hits\"     \"keyword\"  \"geo\"      \"time\"     \"gprop\"    \"category\"\n\nhead(the_df)\n\n# A tibble: 6 × 7\n  date                hits  keyword geo   time      gprop category\n  &lt;dttm&gt;              &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;    &lt;dbl&gt;\n1 2021-09-12 00:00:00 1     Trump   US    today+5-y web          0\n2 2021-09-19 00:00:00 1     Trump   US    today+5-y web          0\n3 2021-09-26 00:00:00 1     Trump   US    today+5-y web          0\n4 2021-10-03 00:00:00 1     Trump   US    today+5-y web          0\n5 2021-10-10 00:00:00 1     Trump   US    today+5-y web          0\n6 2021-10-17 00:00:00 1     Trump   US    today+5-y web          0\n\nr_wide &lt;- the_df %&gt;%\n  mutate(date = as.Date(date),\n         hits = parse_number(hits)) %&gt;%\n  select(date, keyword, hits) %&gt;%\n         pivot_wider(names_from = keyword,\n         values_from = hits)\n\nhead(r_wide)\n\n# A tibble: 6 × 4\n  date       Trump Harris election\n  &lt;date&gt;     &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;\n1 2021-09-12     1      1        2\n2 2021-09-19     1      1        1\n3 2021-09-26     1      1        1\n4 2021-10-03     1      1        1\n5 2021-10-10     1      1        1\n6 2021-10-17     1      1        1\n\nweb_compare &lt;- trend_web %&gt;%\n  mutate(date = as.Date(Time))\n\ncompare &lt;- inner_join(\n  web_compare,\n  r_wide,\n  by = \"date\"\n)\n\ncompare &lt;- compare %&gt;%\n  mutate(\n    diff_Trump = Trump - Donald.Trump,\n    diff_Harris = Harris - Kamala.Harris,\n    diff_Election = election - Election\n  )\n\nhead(compare)\n\n        Time Donald.Trump Kamala.Harris Election       date Trump Harris\n1 2025-09-14           44             1        9 2025-09-14     4      1\n2 2025-09-21           54             2       11 2025-09-21     4      1\n3 2025-09-28           46             1       11 2025-09-28     4      1\n4 2025-10-05           44             1       11 2025-10-05     4      1\n5 2025-10-12           46             1       11 2025-10-12     4      1\n6 2025-10-19           44             1       14 2025-10-19     4      1\n  election diff_Trump diff_Harris diff_Election\n1        1        -40           0            -8\n2        1        -50          -1           -10\n3        1        -42           0           -10\n4        1        -40           0           -10\n5        1        -42           0           -10\n6        1        -40           0           -13\n\ncompare %&gt;%\n  summarise(\n    Trump_same = all(diff_Trump == 0),\n    Trump_min = min(diff_Trump),\n    Trump_max = max(diff_Trump),\n\n    Harris_same = all(diff_Harris == 0),\n    Harris_min = min(diff_Harris),\n    Harris_max = max(diff_Harris),\n\n    Election_same = all(diff_Election == 0),\n    Election_min = min(diff_Election),\n    Election_max = max(diff_Election)\n  )\n\n  Trump_same Trump_min Trump_max Harris_same Harris_min Harris_max\n1      FALSE       -86       -26       FALSE         -1          1\n  Election_same Election_min Election_max\n1         FALSE          -98           -7\n\n\nThe series were not identical. Using R minus website values, the differences ranged from -86 to -26 for Trump, -1 to 1 for Harris, and -98 to -7 for Election. Thus, the R values were generally lower than the website values for Trump and Election, while the Harris series differed only slightly. However, the website and script did not use exactly the same search terms (Donald Trump vs. Trump and Kamala Harris vs. Harris), so some of the observed differences may reflect the search-term choice as well as differences between the two collection methods."
+  },
+  {
+    "objectID": "assign02.html#b.-what-are-the-differences-between-the-two-methods-consider-at-least",
+    "href": "assign02.html#b.-what-are-the-differences-between-the-two-methods-consider-at-least",
+    "title": "Assignment 2",
+    "section": "4. b. What are the differences between the two methods? Consider at least:",
+    "text": "4. b. What are the differences between the two methods? Consider at least:\n\ni. Reproducibility — could someone else regenerate your file exactly?\n\n\nii. Provenance — which method records the query parameters for you?\n\n\niii. Scale — what happens when you need fifty terms instead of three?\n\n\niv. Fragility — what breaks, and how would you know?\nThe two methods differ in reproducibility, provenance, scale, and fragility.\nFor reproducibility, the R method is easier to reproduce because the same code can be saved and rerun. However, the exact Google Trends values may still change between pulls, so the original data should be saved. The website method requires the user to manually repeat the same settings and download the data again.\nFor provenance, R provides a clearer record of the query parameters directly in the code, including the search terms, geography, time range, category, and search type.\nFor scale, R is more efficient because code can automate repeated data collection, whereas manually downloading data becomes impractical when the number of terms increases.\nFor fragility, both methods depend on Google Trends, but gtrendsR can be particularly sensitive to changes or restrictions in the underlying service. For example, requests can fail because of rate limiting.\nSuch failures appear as errors, while more subtle changes in returned values can be detected by comparing and saving repeated pulls."
+  },
+  {
+    "objectID": "assign02.html#c.-runsection7ofthescript-thesamecalltwice-afewminutesapart.-doyougetthesamenumbers",
+    "href": "assign02.html#c.-runsection7ofthescript-thesamecalltwice-afewminutesapart.-doyougetthesamenumbers",
+    "title": "Assignment 2",
+    "section": "4. c. Runsection7ofthescript: thesamecalltwice, afewminutesapart. Doyougetthesamenumbers?",
+    "text": "4. c. Runsection7ofthescript: thesamecalltwice, afewminutesapart. Doyougetthesamenumbers?\nWhat does your answer imply about every finding you might report from this source?\n\ntest1&lt;- readRDS('Lab2/test1.RDS')\ntest2&lt;- readRDS('Lab2/test2.RDS')\n\ndf1 &lt;- test1$interest_over_time\ndf2 &lt;- test2$interest_over_time\n\nall(df1$hits == df2$hits)\n\n[1] TRUE\n\n\nThe two identical calls made a few minutes apart returned the same values (TRUE). This suggests that Google Trends data can be stable across closely timed pulls. However, this does not guarantee exact reproducibility at other times because Google Trends is based on sampled and normalized data. Therefore, findings should be reported with the query parameters and collection time, and the original data should be saved for reproducibility."
+  }
+]
