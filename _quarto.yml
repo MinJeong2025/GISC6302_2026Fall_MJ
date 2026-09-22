@@ -12,7 +12,6 @@ website:
         menu:
           - href: assign02.qmd
             text: Assignment 2
-        menu:
           - href: assign03.qmd
             text: Assignment 3            
 
